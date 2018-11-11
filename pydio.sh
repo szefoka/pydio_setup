@@ -1,3 +1,17 @@
+MYSL_ROOT_PASS=$1
+PYDIO_ADMIN_PASS=$2
+
+if [ -z "$1" ]; then
+  MYSL_ROOT_PASS="root"
+fi
+
+if [ -z "$2" ]; then
+  PYDIO_ADMIN_PASS="pydiopass"
+fi
+
+echo $MYSL_ROOT_PASS
+echo $PYDIO_ADMIN_PASS
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $1"
