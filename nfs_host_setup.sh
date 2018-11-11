@@ -10,6 +10,5 @@ systemctl restart nfs-kernel-server
 
 mkdir -p $SHARED_DIR
 chown -R www-data:www-data $SHARED_DIR
-chown nobody:nogroup /users/szefoka/measurements
 echo "$SHARED_DIR    $IP(rw,sync,no_subtree_check)" > /etc/exports
 sudo systemctl restart nfs-kernel-server

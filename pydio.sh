@@ -17,26 +17,8 @@ mysql -u root -p$1 -e "FLUSH PRIVILEGES;"
 
 echo Pydio is running on http://$(curl -s ipinfo.io/ip)/pydio
 
+#NFS SETUP
+SHARED_DIR=/users/szefoka/measurements
+ssh node2 -o "StrictHostKeyChecking no" "bash -s" < ./nfs_host_setup.sh 10.10.1.1 $SHARED_DIR
 
-#NFS
-apt-get install nfs-common 
-
-ssh node2
-apt-get update
-apt-get install -y nfs-kernel-server 
-
-#use NFSv3
-sed -i 's/RPCNFSDCOUNT=8/RPCNFSDCOUNT="8 --no-nfs-version 4"/'  /etc/default/nfs-kernel-server
-systemctl restart nfs-kernel-server
-
-mkdir -p /users/szefoka/measurements
-chown -R www-data:www-data /users/szefoka/measurements
-chown nobody:nogroup /users/szefoka/measurements
-export IP=10.10.1.1
-export SHARED_DIR=/users/szefoka/measurements
-echo "$SHARED_DIR    $IP(rw,sync,no_subtree_check)" > /etc/exports
-sudo systemctl restart nfs-kernel-server
-
-#node1:
-mkdir -p /var/lib/pydio/data/personal/admin/node2
-mount 10.10.1.2:/users/szefoka/measurements /var/lib/pydio/data/personal/admin/node2
+./nfs_client_setup.sh 10.10.1.2 $SHARED_DIR
